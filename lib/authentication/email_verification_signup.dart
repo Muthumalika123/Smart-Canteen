@@ -5,10 +5,11 @@ import 'package:unibites/authentication/login_screen.dart';
 import 'package:unibites/resources/drawable.dart';
 import '../resources/color.dart';
 import '../resources/dimension.dart';
-import '../resources/font.dart';
 import '../resources/string.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../widgets/loading_widget.dart';
 
 class VerifyEmailSignup extends StatefulWidget {
   const VerifyEmailSignup({super.key});
@@ -99,6 +100,10 @@ class _VerifyEmailState extends State<VerifyEmailSignup> {
       _isLoading = true;
     });
 
+    if (mounted) {
+      LottieDialogExtensions.showLoading(context);
+    }
+
     try {
       User? user = _auth.currentUser;
 
@@ -154,13 +159,21 @@ class _VerifyEmailState extends State<VerifyEmailSignup> {
         _isLoading = false;
       });
     }
+
+    // Dismiss loading dialog
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF222222),
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(),
+      appBar: AppBar(
+          backgroundColor: Color(0xFF222222),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: AppDimension.paddingDefault * 2),
         child: Column(
@@ -181,8 +194,7 @@ class _VerifyEmailState extends State<VerifyEmailSignup> {
                       AppStrings.appName,
                       style: TextStyle(
                           fontSize: 32,
-                          color: Colors.black,
-                          fontFamily: AppFonts.kanitBlack
+                          color: Colors.white,
                       ),
                     ),
                   )
@@ -196,12 +208,11 @@ class _VerifyEmailState extends State<VerifyEmailSignup> {
               child: Row(
                 children: [
                   Text(
-                    "Please Confirm Your\nDigital Identity",
+                    "Please Verify Your\nDigital Identity",
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Colors.white,
                       height: 1.1,
                       fontSize: 24,
-                      fontFamily: AppFonts.outfitBold,
                     ),
                   )
                 ],
@@ -219,7 +230,7 @@ class _VerifyEmailState extends State<VerifyEmailSignup> {
                       textAlign: TextAlign.justify,
                       AppStrings.emailVerficationGuide,
                       style: TextStyle(
-                        color: AppColors.textDarkGrey,
+                        color: AppColors.textSilver,
                         height: 1.2,
                       ),
                     ),
@@ -270,13 +281,15 @@ class _VerifyEmailState extends State<VerifyEmailSignup> {
                     ),
                   ),
                   child: _isLoading
-                      ? const CircularProgressIndicator(color: Colors.black)
+                      ? Text('Sending Email...', style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),)
                       : Text(
                     _emailSent ? 'Resend Verification Email' : 'Send Verification Email',
                     style: const TextStyle(
                         fontSize: 18,
                         color: Colors.black,
-                        fontFamily: AppFonts.outfitBold
                     ),
                   ),
                 ),

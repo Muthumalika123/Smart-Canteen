@@ -7,7 +7,6 @@ import 'package:unibites/pages/main_page.dart';
 import 'package:unibites/resources/drawable.dart';
 import '../resources/color.dart';
 import '../resources/dimension.dart';
-import '../resources/font.dart';
 import '../resources/string.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Add this import
@@ -79,7 +78,7 @@ class _VerifyEmailState extends State<VerifyEmailLogin> {
 
           // Navigate to login screen
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
+            MaterialPageRoute(builder: (context) => const MainPage()),
           );
         }
       }
@@ -159,8 +158,11 @@ class _VerifyEmailState extends State<VerifyEmailLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF1A1A1A),
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Color(0xFF1A1A1A),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: AppDimension.paddingDefault * 2),
         child: Column(
@@ -181,8 +183,7 @@ class _VerifyEmailState extends State<VerifyEmailLogin> {
                       AppStrings.appName,
                       style: TextStyle(
                           fontSize: 32,
-                          color: Colors.black,
-                          fontFamily: AppFonts.kanitBlack
+                          color: Colors.white,
                       ),
                     ),
                   )
@@ -196,12 +197,11 @@ class _VerifyEmailState extends State<VerifyEmailLogin> {
               child: Row(
                 children: [
                   Text(
-                    "Please Confirm Your\nDigital Identity",
+                    "Please Verify Your\nDigital Identity",
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Colors.white,
                       height: 1.1,
                       fontSize: 24,
-                      fontFamily: AppFonts.outfitBold,
                     ),
                   )
                 ],
@@ -219,7 +219,7 @@ class _VerifyEmailState extends State<VerifyEmailLogin> {
                       textAlign: TextAlign.justify,
                       AppStrings.emailVerficationGuide,
                       style: TextStyle(
-                        color: AppColors.textDarkGrey,
+                        color: AppColors.textSilver,
                         height: 1.2,
                       ),
                     ),
@@ -276,7 +276,6 @@ class _VerifyEmailState extends State<VerifyEmailLogin> {
                     style: const TextStyle(
                         fontSize: 18,
                         color: Colors.black,
-                        fontFamily: AppFonts.outfitBold
                     ),
                   ),
                 ),

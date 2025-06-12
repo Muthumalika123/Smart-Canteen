@@ -4,15 +4,18 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:unibites/authentication/email_verification_signup.dart';
 import 'package:unibites/resources/color.dart';
 import 'package:unibites/resources/dimension.dart';
 import 'package:unibites/resources/drawable.dart';
-import 'package:unibites/resources/font.dart';
 import 'package:unibites/resources/string.dart';
+import 'package:unibites/screens/terms_of_use.dart';
+import '../screens/privacy_policy.dart';
 import '../services/firestore_user_service.dart';
 import '../widgets/agreement_dialog.dart';
 import '../widgets/custom_toast_error.dart';
+import '../widgets/loading_widget.dart';
 import 'auth.dart';
 import 'login_screen.dart';
 
@@ -194,6 +197,10 @@ class _SignupScreenState extends State<SignupScreen> {
     String password = _passwordController.text;
     String phone = _phoneController.text.trim();
 
+    if (mounted) {
+      LottieDialogExtensions.showLoading(context);
+    }
+
     setState(() {
       _isLoading = true;
     });
@@ -231,9 +238,9 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
       );
 
-
       // 6. Navigate to email verification screen
       if (mounted) {
+        Navigator.of(context).pop();
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => VerifyEmailSignup()),
         );
@@ -249,6 +256,7 @@ class _SignupScreenState extends State<SignupScreen> {
             setState(() {
               _emailError = errorMessage;
             });
+            Navigator.of(context).pop();
             break;
           case 'weak-password':
             errorMessage = 'Password is too weak. Please use a stronger password.';
@@ -279,6 +287,7 @@ class _SignupScreenState extends State<SignupScreen> {
         });
       }
     }
+
   }
 
   void _signup() {
@@ -338,6 +347,7 @@ class _SignupScreenState extends State<SignupScreen> {
     CustomToast.init(context);
 
     return Scaffold(
+      backgroundColor: Color(0xFF1A1A1A),
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
@@ -347,47 +357,68 @@ class _SignupScreenState extends State<SignupScreen> {
             child: Column(
               children: [
                 SizedBox(height: 90),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SvgPicture.asset(
-                      AppImages.splashLogo,
-                      width: 50,
-                      height: 50,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppDimension.paddingDefault),
-                      child: Text(
-                        AppStrings.appName,
-                        style: TextStyle(
-                            fontSize: 32,
-                            color: Colors.black,
-                            fontFamily: AppFonts.kanitBlack
-                        ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppDimension.paddingDefault),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 14.0, right: 12),
+                        child: SvgPicture.asset('assets/icons/icon-svg.svg',
+                          height: 48,
+                          width: 48,
+                          color: Color(0xFFFFD634),),
                       ),
-                    )
-                  ],
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 0),
+                            child: Text(
+                              AppStrings.appName,
+                              style: TextStyle(
+                                  fontSize: 32,
+                                  color: Colors.white,
+                                  fontFamily: 'Transforma Sans_Trial SemiBold',
+                                  fontWeight: FontWeight.bold
+                              ),
+                            ),
+                          ),
+                          Text(
+                            'Enjoy Your Favourite Meal.',
+                            style: TextStyle(
+                              fontSize: 14,
+                              height: 0.1,
+                              color: Colors.white,
+                              fontFamily: 'Transforma Sans_Trial',
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-                SizedBox(height: 15),
+                SizedBox(height: 75),
 
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: AppDimension.paddingDefault),
                   child: Row(
                     children: [
                       Text(
-                        'Register For\nJoin Our Community',
+                        'Join Our Community,',
                         style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
+                            fontFamily: 'Transforma Sans_Trial SemiBold',
                             height: 1.1,
                             fontSize: 24,
-                            fontFamily: AppFonts.outfitBold
                         ),
                       )
                     ],
                   ),
                 ),
 
-                SizedBox(height: 30),
+                SizedBox(height: 10),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -399,7 +430,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         maxLines: 2,
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                          color: AppColors.textDarkGrey,
+                          color: AppColors.textSilver,
+                          fontFamily: 'Transforma Sans_Trial',
                           height: 1.2,
                         ),
                       ),
@@ -416,7 +448,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: AppDimension.paddingDefault),
                         child: TextField(
                           controller: _firstNameController,
-                          style: const TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.white, fontFamily: 'Transforma Sans_Trial',),
                           onChanged: (_) {
                             // Clear error when user starts typing
                             if (_firstNameError != null) {
@@ -426,6 +458,11 @@ class _SignupScreenState extends State<SignupScreen> {
                             }
                           },
                           decoration: InputDecoration(
+                            labelText: 'First Name',
+                            labelStyle: TextStyle(
+                                fontFamily: 'Transforma Sans_Trial',
+                                color: AppColors.textSilver
+                            ),
                             hintText: 'First Name*',
                             hintStyle: const TextStyle(color: AppColors.hintTextSilver),
                             prefixIcon: const Icon(Icons.person_2_outlined, color: AppColors.iconSilver),
@@ -457,7 +494,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: AppDimension.paddingDefault),
                         child: TextField(
                           controller: _lastNameController,
-                          style: const TextStyle(color: Colors.black),
+                          style: const TextStyle(color: Colors.white, fontFamily: 'Transforma Sans_Trial',),
                           onChanged: (_) {
                             // Clear error when user starts typing
                             if (_lastNameError != null) {
@@ -467,6 +504,11 @@ class _SignupScreenState extends State<SignupScreen> {
                             }
                           },
                           decoration: InputDecoration(
+                            labelText: 'Last Name',
+                            labelStyle: TextStyle(
+                                fontFamily: 'Transforma Sans_Trial',
+                                color: AppColors.textSilver
+                            ),
                             hintText: 'Last Name*',
                             hintStyle: const TextStyle(color: AppColors.hintTextSilver),
                             prefixIcon: const Icon(Icons.person_2_outlined, color: AppColors.iconSilver),
@@ -501,7 +543,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: AppDimension.paddingDefault),
                   child: TextField(
                     controller: _emailController,
-                    style: const TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.white, fontFamily: 'Transforma Sans_Trial',),
                     onChanged: (_) {
                       // Clear error when user starts typing
                       if (_emailError != null) {
@@ -511,9 +553,14 @@ class _SignupScreenState extends State<SignupScreen> {
                       }
                     },
                     decoration: InputDecoration(
-                      hintText: 'Email Address*',
+                      labelText: 'Email Address',
+                      labelStyle: TextStyle(
+                          fontFamily: 'Transforma Sans_Trial',
+                          color: AppColors.textSilver
+                      ),
+                      hintText: 'Email Address',
                       hintStyle: const TextStyle(color: AppColors.hintTextSilver),
-                      prefixIcon: const Icon(Icons.email_outlined, color: AppColors.iconSilver),
+                      prefixIcon: const Icon(Icons.send_outlined, color: AppColors.iconSilver),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide(color: _emailError != null ? Colors.red : Colors.grey),
@@ -545,7 +592,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     children: [
                       TextField(
                         controller: _passwordController,
-                        style: const TextStyle(color: Colors.black),
+                        style: const TextStyle(color: Colors.white, fontFamily: 'Transforma Sans_Trial',),
                         obscureText: _obscureText,
                         onChanged: (_) {
                           // Clear error when user starts typing
@@ -556,7 +603,12 @@ class _SignupScreenState extends State<SignupScreen> {
                           }
                         },
                         decoration: InputDecoration(
-                          hintText: 'Password*',
+                          labelText: 'Password',
+                          labelStyle: TextStyle(
+                              fontFamily: 'Transforma Sans_Trial',
+                              color: AppColors.textSilver
+                          ),
+                          hintText: 'Password',
                           hintStyle: const TextStyle(color: AppColors.hintTextSilver),
                           prefixIcon: const Icon(Icons.lock_outline, color: AppColors.iconSilver),
                           suffixIcon: IconButton(
@@ -591,11 +643,12 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                       ),
                       if (_passwordError == null) Padding(
-                        padding: const EdgeInsets.only(top: 5, left: 15),
+                        padding: const EdgeInsets.only(top: 5, left: 0),
                         child: Text(
                           'Password must be at least 8 characters with 1 uppercase letter, 1 lowercase letter, and 1 special character',
                           style: TextStyle(
                             color: AppColors.textSilver,
+                            fontFamily: 'Transforma Sans_Trial',
                             fontSize: 11,
                           ),
                         ),
@@ -611,7 +664,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   child: TextField(
                     controller: _phoneController,
                     keyboardType: TextInputType.number,
-                    style: const TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.white, fontFamily: 'Transforma Sans_Trial',),
                     onChanged: (_) {
                       // Clear error when user starts typing
                       if (_phoneError != null) {
@@ -621,7 +674,12 @@ class _SignupScreenState extends State<SignupScreen> {
                       }
                     },
                     decoration: InputDecoration(
-                      hintText: 'Phone Number* (e.g., 0712345678)',
+                      labelText: 'Phone Number',
+                      labelStyle: TextStyle(
+                          fontFamily: 'Transforma Sans_Trial',
+                          color: AppColors.textSilver
+                      ),
+                      hintText: 'Phone Number',
                       prefixStyle: const TextStyle(color: Colors.black),
                       hintStyle: const TextStyle(color: AppColors.hintTextSilver),
                       prefixIcon: const Icon(Icons.phone_outlined, color: AppColors.iconSilver),
@@ -666,7 +724,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: _isChecked ? Colors.black : Colors.grey,
+                              color: _isChecked ? Color(0xFFFFD634) : Colors.grey,
                               width: 1.5,
                             ),
                           ),
@@ -674,7 +732,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               ? const Icon(
                             Icons.check,
                             size: 14,
-                            color: Colors.black,
+                            color: Color(0xFFFFD634),
                           )
                               : null,
                         ),
@@ -688,31 +746,48 @@ class _SignupScreenState extends State<SignupScreen> {
                               const TextSpan(
                                   text: 'I confirm that I have read, consent and agree to UniBites\' ',
                                   style: TextStyle(
+                                    fontFamily: 'Transforma Sans_Trial',
+                                      height: 1.1
                                   )
                               ),
                               TextSpan(
                                 text: 'Terms of Use',
                                 style: const TextStyle(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                    fontFamily: 'Transforma Sans_Trial',
+                                    height: 1.1
                                 ),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) => const TermsOfUseScreen()),
+                                    );
                                     // Handle the tap event, e.g., navigate to another page
                                     if (kDebugMode) {
                                       print('Terms of Use tapped!');
                                     }
                                   },
                               ),
-                              const TextSpan(text: ' and '),
+                              const TextSpan(text: ' and ', style: TextStyle(
+                                  fontFamily: 'Transforma Sans_Trial',
+                                  height: 1
+                              )),
                               TextSpan(
                                 text: 'Privacy Policy',
                                 style: const TextStyle(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   fontWeight: FontWeight.bold,
+                                    fontFamily: 'Transforma Sans_Trial',
+                                    height: 1.1,
+                                  fontSize: 12
                                 ),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) => const PrivacyPolicyScreen()),
+                                    );
                                     // Handle the tap event, e.g., navigate to another page
                                     if (kDebugMode) {
                                       print('Privacy Policy tapped!');
@@ -743,7 +818,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         // Disable button during loading
-                        disabledBackgroundColor: Colors.white,
+                        disabledBackgroundColor: Color(0xFF222222),
                       ),
                       child: _isLoading
                           ? Row(
@@ -752,18 +827,28 @@ class _SignupScreenState extends State<SignupScreen> {
                           SizedBox(
                             width: 18,
                             height: 18,
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                              strokeWidth: 5,
-                            ),
+                            child: Lottie.asset(
+                              'assets/animations/splash_anim.json',
+                              width: 18, // Increased from 16 to be more visible
+                              height: 18, // Increased from 16 to be more visible
+                              fit: BoxFit.contain,
+                              repeat: true,
+                              animate: true, // Explicitly set animation to true
+                              delegates: LottieDelegates(
+                                  values: [
+                                    // You can add value delegates here if needed
+                                    ValueDelegate.color(['**'], value: Colors.white),
+                                  ]
+                              ),
+                            )
                           ),
                           SizedBox(width: 15),
                           Text(
                             'Sign Up',
                             style: TextStyle(
                               fontSize: 18,
-                              color: Colors.black,
-                              fontFamily: AppFonts.outfitBold,
+                              fontFamily: 'Transforma Sans_Trial SemiBold',
+                              color: Colors.white,
                             ),
                           ),
                         ],
@@ -772,8 +857,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         'Sign up',
                         style: TextStyle(
                             fontSize: 18,
+                          fontFamily: 'Transforma Sans_Trial SemiBold',
                             color: Colors.black,
-                            fontFamily: AppFonts.outfitBold
                         ),
                       ),
                     ),
@@ -792,8 +877,10 @@ class _SignupScreenState extends State<SignupScreen> {
                         child: const Text(
                           'Contact us',
                           style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 15
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontFamily: 'Transforma Sans_Trial SemiBold',
+                              fontWeight: FontWeight.bold
                           ),
                         ),
                       ),
@@ -809,8 +896,10 @@ class _SignupScreenState extends State<SignupScreen> {
                         child: const Text(
                           'Login',
                           style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 15
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontFamily: 'Transforma Sans_Trial SemiBold',
+                              fontWeight: FontWeight.bold
                           ),
                         ),
                       ),
@@ -818,7 +907,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   ],
                 ),
                 // Extra space at bottom to ensure scrolling works well
-                const SizedBox(height: 20),
+                const SizedBox(height: 40),
+                // Google sign in button
               ],
             ),
           ),
